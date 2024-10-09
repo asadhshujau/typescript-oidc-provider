@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import 'reflect-metadata'
 import Koa from 'koa'
 import render from 'koa-ejs'
@@ -24,7 +25,7 @@ const start = async () => {
     const provider = await oidcService.getOidc()
     app.use(koaStatic(path.resolve('public')))
     app.use(mount(provider.app))
-    app.listen(process.env.PORT || 3000, () => console.log(`oidc-provider listening on port ${process.env.PORT || 3000}`))
+    app.listen(process.env.OIDC_ISSUER_PORT || 3000, () => console.log(`oidc-provider listening on port ${process.env.OIDC_ISSUER_PORT || 3000}`))
 }
 
 void start()

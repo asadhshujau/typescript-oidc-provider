@@ -1,29 +1,37 @@
-import { Configuration } from "oidc-provider"
+import { Account, AccountClaims, Configuration, FindAccount } from "oidc-provider"
 import * as accountService from "../services/account.service"
+import { MongoDbAdapter } from '../adapters/mongodb'
 
 export const oidcProviderUrl = process.env.OIDC_ISSUER_URL || 'http://localhost:3000'
+
+const findAccount: FindAccount = async (ctx, id) => {
+  // Simulating account lookup
+  const accountDetails = await accountService.get(id) // { emailVerified: true, email: "ebrahimmfadae@gmail.com" };
+
+  if (!accountDetails) return undefined;
+
+  const account: Account = {
+    accountId: id,
+    async claims(use, scope) {
+      const claims: AccountClaims = {
+        sub: id
+      };
+
+      if (scope?.includes('email')) {
+        claims.email = accountDetails.email;
+        claims.email_verified = accountDetails.emailVerified;
+      }
+
+      return claims;
+    },
+  };
+
+  return account;
+};
+
 export const configuration: Configuration = {
-  async findAccount(ctx, id) {
-    const account = { emailVerified: true, email: "ebrahimmfadae@gmail.com" }
-
-    if (!account) return undefined
-
-    return {
-      accountId: id,
-      async claims(_, scope) {
-        if (!scope) return undefined
-        const openid = { sub: id }
-        const email = {
-          email: account.email,
-          email_verified: account.emailVerified
-        }
-        const accountInfo = {}
-        if (scope.includes('openid')) Object.assign(accountInfo, openid)
-        if (scope.includes('email')) Object.assign(accountInfo, email)
-        return accountInfo
-      },
-    }
-  },
+  adapter: MongoDbAdapter,
+  findAccount,
   clients: [
     {
       client_id: "app",

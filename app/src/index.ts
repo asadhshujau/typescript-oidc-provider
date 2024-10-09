@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import Koa from 'koa'
 import render from 'koa-ejs'
 import koaStatic from 'koa-static'
