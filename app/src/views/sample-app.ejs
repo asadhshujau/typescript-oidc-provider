@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <%- include('components/head'); -%>
+  <body class="app">
+    <div class="login-card">
+      <h1><%= title %></h1>
+      <form action="<%= authServerUrl %>/auth" method="post">
+        <label>Client Id</label>
+        <input required name="client_id" value="<%= clientId %>" />
+        <label>Response Type</label>
+        <input required name="response_type" value="code" />
+        <label>Redirect URI</label>
+        <input required name="redirect_uri" value="<%= appUrl %>/cb" />
+        <label>Scope</label>
+        <input required name="scope" value="openid" />
+
+        <button type="submit" class="login login-submit">Grant Access</button>
+      </form>
+    </div>
+  </body>
+</html>
