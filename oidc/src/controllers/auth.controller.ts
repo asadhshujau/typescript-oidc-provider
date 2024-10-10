@@ -7,6 +7,15 @@ function debug(obj: any) {
 }
 
 export default (oidc: Provider): { [key: string]: Middleware } => ({
+    register: async (ctx) => {
+        const body = ctx.request.body
+        if (await accountService.get(body.username)) ctx.throw(400)
+        await accountService.set({
+            username: body.username,
+            password: body.password,
+        })
+        ctx.message = "User successfully created."
+    },
     interaction: async (ctx) => {
         const { uid, prompt, params, session } = (await oidc.interactionDetails(ctx.req, ctx.res))
 

@@ -40,6 +40,14 @@ export const configuration: Configuration = {
       grant_types: ["authorization_code"],
       scope: "openid email profile phone address offline_access",
     },
+    {
+      client_id: "api",
+      client_secret: "night-wolf",
+      redirect_uris: [],
+      response_types: [],
+      grant_types: ["client_credentials"],
+      scope: "openid email profile phone address",
+    },
   ],
   claims: {
     address: ["address"],
@@ -64,6 +72,30 @@ export const configuration: Configuration = {
   },
   pkce: { required: () => false, methods: ["S256"] },
   features: {
-    devInteractions: { enabled: false }
+    devInteractions: { enabled: false },
+    introspection: {
+      enabled: true,
+      allowedPolicy: (ctx, client, token) => {
+        if (
+          client.introspectionEndpointAuthMethod === "none" &&
+          token.clientId !== ctx.oidc.client?.clientId
+        ) {
+          return false;
+        }
+        return true;
+      }
+    },
+    resourceIndicators: {
+      defaultResource(ctx) {
+        return Array.isArray(ctx.oidc.params?.resource)
+          ? ctx.oidc.params?.resource[0]
+          : ctx.oidc.params?.resource;
+      },
+      getResourceServerInfo(ctx, resourceIndicator, client) {
+        return {
+          scope: "api:read offline_access",
+        };
+      },
+    }
   }
 }

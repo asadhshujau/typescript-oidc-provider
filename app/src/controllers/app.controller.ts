@@ -1,6 +1,12 @@
 import { Middleware } from "koa"
 
 export default (): { [key: string]: Middleware } => ({
+    registerForm: async (ctx) => {
+        return ctx.render("register", {
+            title: "Register User",
+            authServerUrl: process.env.OIDC_ISSUER_URL,
+        })
+    },
     callback: async (ctx) => {
         if ("error" in ctx.query) {
             ctx.throw(401, `${ctx.query.error}: ${ctx.query.error_description}`)
