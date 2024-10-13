@@ -18,5 +18,7 @@ export default (oidc: Provider) => {
     router.get('/interaction/:uid/abort', noCache, abortInteraction)
     router.get('/interaction/:uid', noCache, interaction)
 
+    console.log(router.stack.map(i => i.path));
+
     return router
 }

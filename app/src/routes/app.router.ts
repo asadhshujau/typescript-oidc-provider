@@ -12,5 +12,7 @@ export default () => {
     router.get('/cb', callback)
     router.get('/pi', pi)
 
+    console.log(router.stack.map(i => i.path));
+
     return router
 }

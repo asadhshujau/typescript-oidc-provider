@@ -10,5 +10,7 @@ export default () => {
 
     router.get('/pi', authenticate, authorize('api:read'), pi)
 
+    console.log(router.stack.map(i => i.path));
+
     return router
 }

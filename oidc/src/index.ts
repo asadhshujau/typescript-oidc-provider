@@ -28,7 +28,7 @@ const start = async () => {
     app.use(koaStatic(path.resolve('public')))
     app.use(router(provider).routes())
     app.use(mount(provider.app))
-    app.listen(process.env.PORT || 3000, () => console.log(`oidc-provider listening on port ${process.env.PORT || 3000}`))
+    app.listen(process.env.PORT, () => console.log(`oidc-provider listening on port ${process.env.PORT}`))
 }
 
 void start()

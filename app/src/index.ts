@@ -15,5 +15,5 @@ render(app, {
 
 app.use(koaStatic(path.resolve("public")))
 app.use(routes().routes())
-app.listen(process.env.PORT || 3005, () => console.log(`oidc-provider listening on port ${process.env.PORT || 3005}`))
+app.listen(process.env.PORT, () => console.log(`oidc-provider listening on port ${process.env.PORT}`))
 

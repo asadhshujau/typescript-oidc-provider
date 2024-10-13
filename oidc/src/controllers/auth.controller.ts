@@ -32,6 +32,7 @@ export default (oidc: Provider): { [key: string]: Middleware } => ({
         if (await accountService.get(body.username)) ctx.throw(400)
         await accountService.set({
             username: body.username,
+            email: body.username as string + '@example.com',
             password: body.password,
         })
         ctx.message = "User successfully created."
