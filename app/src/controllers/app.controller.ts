@@ -7,6 +7,9 @@ export default (): { [key: string]: Middleware } => ({
             authServerUrl: process.env.OIDC_ISSUER_URL,
         })
     },
+    pi: async (ctx) => {
+        return ctx.render("pi", { title: "PI", apiUrl: process.env.API_URL })
+    },
     callback: async (ctx) => {
         if ("error" in ctx.query) {
             ctx.throw(401, `${ctx.query.error}: ${ctx.query.error_description}`)

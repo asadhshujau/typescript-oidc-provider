@@ -8,6 +8,7 @@ import path from 'path'
 import Container from 'typedi'
 import { initializeOidcModule } from './configs/oidc-module'
 import { OidcService } from './configs/oidc-service'
+import router from './routes'
 
 initializeOidcModule()
 
@@ -24,6 +25,7 @@ const start = async () => {
     const oidcService = Container.get(OidcService)
     const provider = await oidcService.getOidc()
     app.use(koaStatic(path.resolve('public')))
+    app.use(router(provider).routes())
     app.use(mount(provider.app))
     app.listen(process.env.OIDC_ISSUER_PORT || 3000, () => console.log(`oidc-provider listening on port ${process.env.OIDC_ISSUER_PORT || 3000}`))
 }
