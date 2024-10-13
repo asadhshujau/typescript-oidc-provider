@@ -1,4 +1,4 @@
-import { Account } from '../db/mongodb/models/Account'
+import { accounts } from '../db/memory'
 
-export const get = async (key: string) => Account.findOne({ username: key })
-export const set = async (payload: any) => Account.create(payload)
+export const get = async (key: string) => accounts.get(key)
+export const set = async (key: string, value: any) => accounts.set(key, value)

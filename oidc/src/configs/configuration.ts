@@ -1,12 +1,13 @@
-import { Account, AccountClaims, Configuration, FindAccount } from "oidc-provider"
-import * as accountService from "../services/account.service"
+import { Account, AccountClaims, Configuration, FindAccount } from 'oidc-provider'
+import * as accountService from '../services/account-persist.service'
 import { MongoDbAdapter } from '../adapters/mongodb'
 
-export const oidcProviderUrl = process.env.OIDC_ISSUER || 'http://localhost:3000'
+export const oidcProviderUrl = process.env.OIDC_ISSUER as string
 
+// findAccount function is different from sampleOIDCrepo folder
 const findAccount: FindAccount = async (ctx, id) => {
-  // Simulating account lookup
-  const accountDetails = await accountService.get(id) // { emailVerified: true, email: "ebrahimmfadae@gmail.com" };
+
+  const accountDetails = await accountService.get(id)
 
   if (!accountDetails) return undefined
 
@@ -30,23 +31,27 @@ const findAccount: FindAccount = async (ctx, id) => {
 }
 
 export const configuration: Configuration = {
+  scopes: ['api:read', 'api:write', 'offline_access'],
   adapter: MongoDbAdapter,
+  clientBasedCORS() {
+    return true
+  },
   findAccount,
   clients: [
     {
-      client_id: "app",
-      client_secret: "scorpion",
-      redirect_uris: ["http://localhost:3005/cb"],
-      grant_types: ["authorization_code"],
-      scope: "openid email profile phone address offline_access",
+      client_id: 'app',
+      client_secret: 'scorpion',
+      redirect_uris: ['http://localhost:3005/cb'],
+      grant_types: ['authorization_code', 'password', 'refresh_token', 'client_credentials'],
+      scope: 'openid email profile phone address offline_access api:read',
     },
     {
-      client_id: "api",
-      client_secret: "night-wolf",
+      client_id: 'api',
+      client_secret: 'night-wolf',
       redirect_uris: [],
       response_types: [],
-      grant_types: ["client_credentials"],
-      scope: "openid email profile phone address",
+      grant_types: ['client_credentials'],
+      scope: 'openid email profile phone address',
     },
   ],
   claims: {
@@ -70,10 +75,10 @@ export const configuration: Configuration = {
       "zoneinfo",
     ],
   },
-  pkce: { required: () => false, methods: ["S256"] },
+  // pkce: { required: () => false, methods: ["S256"] },
   features: {
-    devInteractions: { enabled: false },
-    introspection: {
+    clientCredentials: { enabled: true },
+    introspection: { // not same as sampleOIDCrepo
       enabled: true,
       allowedPolicy: (ctx, client, token) => {
         if (
@@ -85,13 +90,19 @@ export const configuration: Configuration = {
         return true
       }
     },
+    revocation: { enabled: true },
+    devInteractions: { enabled: false },
     resourceIndicators: {
+      enabled: true,
+      useGrantedResource() {
+        return true
+      },
       defaultResource(ctx) {
         return Array.isArray(ctx.oidc.params?.resource)
           ? ctx.oidc.params?.resource[0]
           : ctx.oidc.params?.resource
       },
-      getResourceServerInfo(ctx, resourceIndicator, client) {
+      getResourceServerInfo() {
         return {
           scope: "api:read offline_access",
         }
@@ -117,21 +128,20 @@ export const configuration: Configuration = {
     keys: ['subzero']
   },
   ttl: {
-    AccessToken: function AccessTokenTTL(ctx, token, client) {
+    AccessToken: function AccessTokenTTL(ctx, token) {
       if (token.resourceServer) {
         return token.resourceServer.accessTokenTTL || 60 * 60 // 1 hour in seconds
       }
       return 60 * 60 // 1 hour in seconds
     },
     AuthorizationCode: 600 /* 10 minutes in seconds */,
-    BackchannelAuthenticationRequest:
-      function BackchannelAuthenticationRequestTTL(ctx, request, client) {
+    BackchannelAuthenticationRequest: function BackchannelAuthenticationRequestTTL(ctx) {
         if (ctx && ctx.oidc && ctx.oidc.params?.requested_expiry) {
           return Math.min(10 * 60, ctx.oidc.params?.requested_expiry as number) // 10 minutes in seconds or requested_expiry, whichever is shorter
         }
         return 10 * 60 // 10 minutes in seconds
       },
-    ClientCredentials: function ClientCredentialsTTL(ctx, token, client) {
+    ClientCredentials: function ClientCredentialsTTL(ctx, token) {
       if (token.resourceServer) {
         return token.resourceServer.accessTokenTTL || 10 * 60 // 10 minutes in seconds
       }
