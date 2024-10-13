@@ -1,4 +1,4 @@
-import 'dotenv/config'
+// import 'dotenv/config'
 import cors from '@koa/cors'
 import Koa from 'koa'
 import router from './routes'
@@ -8,8 +8,8 @@ const app = new Koa()
 app.use(cors())
 app.use(router().routes())
 
-app.listen(process.env.API_PORT, () => {
+app.listen(process.env.PORT, () => {
     console.log(
-        `api listening on port ${process.env.API_PORT}, check http://localhost:${process.env.API_PORT}`
+        `api listening on port ${process.env.PORT}, check http://localhost:${process.env.PORT}`
     )
 })

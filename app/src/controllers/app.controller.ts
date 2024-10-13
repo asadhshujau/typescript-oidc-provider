@@ -4,11 +4,8 @@ export default (): { [key: string]: Middleware } => ({
     registerForm: async (ctx) => {
         return ctx.render("register", {
             title: "Register User",
-            authServerUrl: process.env.OIDC_ISSUER_URL,
+            authServerUrl: process.env.PUBLIC_OIDC_ISSUER,
         })
-    },
-    pi: async (ctx) => {
-        return ctx.render("pi", { title: "PI", apiUrl: process.env.API_URL })
     },
     callback: async (ctx) => {
         if ("error" in ctx.query) {
@@ -17,19 +14,40 @@ export default (): { [key: string]: Middleware } => ({
             return ctx.render("token", {
                 code: ctx.query.code,
                 title: "App Callback",
-                authServerUrl: process.env.OIDC_ISSUER_URL || 'http://localhost:3000',
-                appUrl: process.env.APP_URL || 'http://localhost:3005',
-                clientId: process.env.CLIENT_ID || 'app',
-                clientSecret: process.env.CLIENT_SECRET || 'scorpion',
+                authServerUrl: process.env.PUBLIC_OIDC_ISSUER,
+                appUrl: process.env.PUBLIC_APP_URL,
+                clientId: process.env.CLIENT_ID,
+                clientSecret: process.env.CLIENT_SECRET,
             })
         }
     },
     sampleApp: async (ctx) => {
         return ctx.render("sample-app", {
             title: "Sample App",
-            authServerUrl: process.env.OIDC_ISSUER_URL || 'http://localhost:3000',
-            appUrl: process.env.APP_URL || 'http://localhost:3005',
-            clientId: process.env.CLIENT_ID || 'app',
+            authServerUrl: process.env.PUBLIC_OIDC_ISSUER,
+            apiUrl: process.env.PUBLIC_API_URL,
+            appUrl: process.env.PUBLIC_APP_URL,
+            clientId: process.env.CLIENT_ID,
         })
+    },
+    signIn: async (ctx) => {
+        return ctx.render('sign-in', {
+            title: 'Get Token With Credentials',
+            authServerUrl: process.env.PUBLIC_OIDC_ISSUER,
+            apiUrl: process.env.PUBLIC_API_URL,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+        })
+    },
+    clientLogin: async (ctx) => {
+        return ctx.render('client-login', {
+            title: 'Client Login',
+            authServerUrl: process.env.PUBLIC_OIDC_ISSUER,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+        })
+    },
+    pi: async (ctx) => {
+        return ctx.render("pi", { title: "PI", apiUrl: process.env.PUBLIC_API_URL })
     },
 })

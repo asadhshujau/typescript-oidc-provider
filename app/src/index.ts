@@ -1,4 +1,4 @@
-import 'dotenv/config'
+// import 'dotenv/config'
 import Koa from 'koa'
 import render from 'koa-ejs'
 import koaStatic from 'koa-static'
@@ -15,5 +15,5 @@ render(app, {
 
 app.use(koaStatic(path.resolve("public")))
 app.use(routes().routes())
-app.listen(process.env.APP_PORT || 3005, () => console.log(`oidc-provider listening on port ${process.env.APP_PORT || 3005}`))
+app.listen(process.env.PORT || 3005, () => console.log(`oidc-provider listening on port ${process.env.PORT || 3005}`))
 

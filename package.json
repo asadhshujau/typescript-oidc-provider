@@ -4,8 +4,13 @@
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
+    "compose:up": "docker compose up -d",
+    "compose:down": "docker compose down",
+    "compose:stop": "docker compose stop",
+    "start:api": "ts-node api/src",
+    "start:app": "ts-node app/src",
     "start:oidc": "ts-node oidc/src",
-    "start:app": "ts-node app/src"
+    "test": "echo \"Gandalf: You shall !not pass!\" && exit 1"
   },
   "dependencies": {
     "@koa/cors": "^5.0.0",
@@ -29,6 +34,7 @@
     "@types/koa-mount": "^4.0.5",
     "@types/koa-router": "^7.4.8",
     "@types/koa-static": "^4.0.4",
+    "@types/koa__cors": "^5.0.0",
     "@types/node": "^22.7.5",
     "@types/oidc-provider": "^8.5.2"
   }

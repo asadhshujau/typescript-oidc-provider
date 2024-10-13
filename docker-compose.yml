@@ -1,0 +1,53 @@
+services:
+  oidc:
+    image: node:18.17-alpine
+    command: yarn start:oidc
+    working_dir: /app
+    environment:
+      - PORT=80
+      - OIDC_ISSUER=$PUBLIC_OIDC_ISSUER
+      - MONGODB_URI=$MONGODB_URI
+    ports:
+      - '3000:80'
+    volumes:
+      - .:/app
+  api:
+    image: node:18.17-alpine
+    command: yarn start:api
+    working_dir: /app
+    environment:
+      - PORT=80
+      - OIDC_ISSUER=$INTERNAL_OIDC_ISSUER
+      - CLIENT_ID=api
+      - CLIENT_SECRET=night-wolf
+    ports:
+      - '3006:80'
+    volumes:
+      - .:/app
+  app:
+    image: node:18.17-alpine
+    command: yarn start:app
+    working_dir: /app
+    environment:
+      - PORT=80
+      - PUBLIC_OIDC_ISSUER=http://localhost:3000
+      - PUBLIC_APP_URL=http://localhost:3005
+      - PUBLIC_API_URL=http://localhost:3006
+      - CLIENT_ID=app
+      - CLIENT_SECRET=scorpion
+    ports:
+      - '3005:80'
+    volumes:
+      - .:/app
+  mongo:
+    image: mongo:5.0
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: test $$(mongo --quiet --eval "db.serverStatus().ok") -eq 1
+      interval: 10s
+      start_period: 30s
+volumes:
+  mongo-data: {}

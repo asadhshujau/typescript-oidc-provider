@@ -16,10 +16,7 @@ BaseModelSchema.index({ key: 1, "payload.kind": 1 }, { unique: true })
  */
 BaseModelSchema.index(
     { "payload.uid": 1 },
-    {
-        unique: true,
-        partialFilterExpression: { "payload.kind": "Session" },
-    }
+    { unique: true, partialFilterExpression: { "payload.kind": "Session" } }
 )
 
 /**

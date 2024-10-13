@@ -1,14 +1,16 @@
-import Router from "koa-router"
-import appController from "../controllers/app.controller"
+import Router from 'koa-router'
+import appController from '../controllers/app.controller'
 
 export default () => {
     const router = new Router()
-    const { callback, sampleApp, registerForm, pi } = appController()
+    const { callback, sampleApp, signIn, clientLogin, registerForm, pi } = appController()
 
-    router.get("/", sampleApp)
-    router.get("/cb", callback)
-    router.get("/register", registerForm)
-    router.get("/pi", pi)
+    router.get('/', sampleApp)
+    router.get('/register', registerForm)
+    router.get('/sign-in', signIn)
+    router.get('/client-login', clientLogin)
+    router.get('/cb', callback)
+    router.get('/pi', pi)
 
     return router
 }

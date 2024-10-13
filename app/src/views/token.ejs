@@ -20,10 +20,20 @@
         <label>Redirect URI</label>
         <input required name="redirect_uri" value="<%= appUrl %>/cb" />
         <label>Scope</label>
-        <input required name="scope" value="openid" />
+        <input required name="scope" value="openid offline_access api:read" />
+        <label>Code Verifier</label>
+        <input id="codeVerifierInput" required name="code_verifier" />
+        <label>Code Challenge Method</label>
+        <input required name="code_challenge_method" value="S256" />
 
         <button type="submit" class="login login-submit">Issue Token</button>
       </form>
     </div>
   </body>
+  <script>
+    (async function () {
+      document.getElementById("codeVerifierInput").value =
+        window.sessionStorage.getItem("codeVerifier");
+    })();
+  </script>
 </html>

@@ -2,7 +2,7 @@ import { Account, AccountClaims, Configuration, FindAccount } from "oidc-provide
 import * as accountService from "../services/account.service"
 import { MongoDbAdapter } from '../adapters/mongodb'
 
-export const oidcProviderUrl = process.env.OIDC_ISSUER_URL || 'http://localhost:3000'
+export const oidcProviderUrl = process.env.OIDC_ISSUER || 'http://localhost:3000'
 
 const findAccount: FindAccount = async (ctx, id) => {
   // Simulating account lookup
